@@ -1,4 +1,4 @@
-package com.joseluisgs.todobd2020
+package com.joseluisgs.todobd2020.datos
 
 /**
  * Clase Pojo para el modelo
