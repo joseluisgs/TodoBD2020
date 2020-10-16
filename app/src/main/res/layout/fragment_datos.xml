@@ -3,19 +3,19 @@
                                                    xmlns:tools="http://schemas.android.com/tools"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="match_parent"
-                                                   android:id="@+id/fragment_noticias">
+                                                   android:id="@+id/fragment_datos">
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/noticiasSwipe"
+            android:id="@+id/datosSwipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:id="@+id/noticiasScroll">
+                android:layout_height="match_parent" android:id="@+id/datosScroll">
 
 
             <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/noticiasRecycler"
+                    android:id="@+id/datosRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:layout_editor_absoluteX="222dp"
@@ -27,7 +27,7 @@
         </ScrollView>
 
         <ProgressBar
-                android:id="@+id/noticiasProgressBar"
+                android:id="@+id/datosProgressBar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="117dp"
                 android:layout_height="78dp"
