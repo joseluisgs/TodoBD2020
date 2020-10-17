@@ -41,7 +41,7 @@ class DatosListAdapter(
      * @param position
      */
     override fun onBindViewHolder(holder: DatoViewHolder, position: Int) {
-        holder.txItemDato.text = listaDatos[position].description
+        holder.txItemDato.text = listaDatos[position].descripcion
         holder.ivItemDato.setImageResource(listaDatos[position].imgId)
 //        Picasso.get()
 //            .load(listaNoticias[position].imagen) //Instanciamos un objeto de la clase (creada más abajo) para redondear la imagen

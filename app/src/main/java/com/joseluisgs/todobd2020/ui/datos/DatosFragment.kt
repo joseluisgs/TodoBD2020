@@ -1,5 +1,6 @@
 package com.joseluisgs.todobd2020.ui.datos
 
+import android.app.AlertDialog
 import android.graphics.*
 import android.os.AsyncTask
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.joseluisgs.todobd2020.R
 import com.joseluisgs.todobd2020.datos.Dato
 import com.joseluisgs.todobd2020.datos.DatosController
+import kotlinx.android.synthetic.main.dialog_layout.view.*
 import kotlinx.android.synthetic.main.fragment_datos.*
 
 
@@ -56,6 +59,15 @@ class DatosFragment : Fragment() {
 
         // Mostramos las vistas de listas y adaptador asociado
         datosRecycler.layoutManager = LinearLayoutManager(context)
+
+        // iniciamos los eventos
+        iniciarEventosBotones()
+    }
+
+    private fun iniciarEventosBotones() {
+        datosBtnNuevo.setOnClickListener {
+            nuevoElemento()
+        }
     }
 
 
@@ -202,12 +214,16 @@ class DatosFragment : Fragment() {
      */
     private fun borrarElemento(position: Int) {
         // Acciones
-        val deletedModel = datos[position]
+        val deletedModel: Dato = datos[position]
         adapter.removeItem(position)
+        // Lo borramos
+        DatosController.deleteDato(deletedModel, context)
         // Mostramos la barra. Se la da opción al usuario de recuperar lo borrado con el el snackbar
         val snackbar = Snackbar.make(view!!, "Dato eliminado", Snackbar.LENGTH_LONG)
         snackbar.setAction("DESHACER") { // undo is selected, restore the deleted item
             adapter.restoreItem(deletedModel, position)
+            // Lo insertamos
+            DatosController.insertDato(deletedModel, context)
         }
         snackbar.setActionTextColor(resources.getColor(R.color.colorPrimary))
         snackbar.show()
@@ -218,10 +234,67 @@ class DatosFragment : Fragment() {
      * @param position Int
      */
     private fun editarElemento(position: Int) {
-        val dato = datos[position]
-        // abrirDatos(noticia)
+
+        // https://inducesmile.com/android-programming/how-to-add-edittext-in-alert-dialog-programmatically-in-android/
+        val editedModel: Dato = datos[position]
         adapter.removeItem(position)
-        adapter.restoreItem(dato, position);
+        // Creamos el dialogo y casamos sus elementos
+        val dialogBuilder = AlertDialog.Builder(context).create()
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_layout, null)
+
+        dialogView.txtNombreDialog.text = "Nuevo nombre para: " + editedModel.descripcion
+        // Pulsamos cancelar
+        dialogView.btnCancelarDialog.setOnClickListener {
+            dialogBuilder.dismiss()
+            adapter.restoreItem(editedModel, position)
+        }
+        // Pulsamos aceptar
+        dialogView.btnAceptarDialog.setOnClickListener {
+            // Creamos el nuevo dato
+            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
+            dialogBuilder.dismiss()
+            adapter.restoreItem(datoNew, position)
+            // Actualizamos datos
+            DatosController.updateDato(datoNew, editedModel, context)
+        }
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.show()
+    }
+
+    private fun nuevoElemento() {
+        // Creamos el dialogo y casamos sus elementos
+        val dialogBuilder = AlertDialog.Builder(context).create()
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_layout, null)
+
+        dialogView.txtNombreDialog.text = "Nuevo nombre: "
+        // Pulsamos cancelar
+        dialogView.btnCancelarDialog.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+        // Pulsamos aceptar
+        dialogView.btnAceptarDialog.setOnClickListener {
+            // Creamos el nuevo dato
+            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), android.R.drawable.ic_menu_compass)
+            dialogBuilder.dismiss()
+            adapter.addItem(datoNew)
+            // insertamos los datos
+            DatosController.insertDato(datoNew, context)
+        }
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.show()
+    }
+
+    fun getDatosFromBD() {
+        // Vamos a borralo todo, opcional
+        // DatosController.removeAll(context)
+        // insertamos un dato
+        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
+        // Seleccionamos los datos
+        this.datos = DatosController.selectDatos(null, context)!!
+        // Si queremos le añadimos unos datos ficticios
+        // this.datos.addAll(DatosController.initDatos())
     }
 
 
@@ -230,7 +303,21 @@ class DatosFragment : Fragment() {
      * @param dato Dato
      */
     private fun eventoClicFila(dato: Dato) {
-        Log.d("Datos", "Has hecho clic en dato: $dato")
+        // Creamos el dialogo y casamos sus elementos
+        val dialogBuilder = AlertDialog.Builder(context).create()
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_layout, null)
+
+        dialogView.btnCancelarDialog.isVisible = false
+        dialogView.edtDescripcionDialog.setText(dato.descripcion)
+        dialogView.edtDescripcionDialog.isEnabled = false
+        dialogView.txtNombreDialog.text = "Nombre: "
+        // Pulsamos aceptar
+        dialogView.btnAceptarDialog.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.show()
     }
 
     /**
@@ -250,7 +337,7 @@ class DatosFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): Void? {
             Log.d("Datos", "Entrado en doInBackgroud");
             try {
-                datos = DatosController.initDatos()
+                getDatosFromBD()
                 Log.d("Datos", "Datos pre tamaño: " + datos.size.toString());
             } catch (e: Exception) {
                 Log.e("T2Plano ", e.message.toString());
