@@ -12,5 +12,14 @@ import io.realm.annotations.RealmClass
  */
 
 // Podemos usar la notacion
-@RealmClass
-open class Dato(@PrimaryKey var id: String, var descripcion: String, var imgId: Int) : RealmObject()
+// Es importante que los datos tenga un valor por defecto, lo ideal sería
+open class Dato(var id: Long = 0,
+                var descripcion: String ="",
+                var imgId: Int=0) : RealmObject() {
+    constructor(descripcion: String, imgId: Int) : this((System.currentTimeMillis() / 1000L), descripcion, imgId)
+}
+
+//open class Student(
+//        var name: String?= null,
+//        var age: Int?= null
+//) : RealmObject
