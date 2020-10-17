@@ -19,7 +19,7 @@ object DatosController {
         val config = RealmConfiguration.Builder()
             .name(DATOS_BD)
             .schemaVersion(DATOS_BD_VERSION) // Versión de esquema estamos trabajando, si lo cambiamos, debemos incrementar
-            .deleteRealmIfMigrationNeeded() // Podemos borrar los datos que ya haya si cambiamos el esquema
+            .deleteRealmIfMigrationNeeded() // Podemos borrar los datos que ya haya si cambiamos el esquema,
             .build()
         Realm.setDefaultConfiguration(config)
         Log.d("Datos", "Iniciando Realm")

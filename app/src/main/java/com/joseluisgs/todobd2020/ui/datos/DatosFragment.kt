@@ -294,7 +294,7 @@ class DatosFragment : Fragment() {
 
     fun getDatosFromBD() {
         // Vamos a borralo todo, opcional
-        DatosController.removeAll()
+        //DatosController.removeAll()
         // insertamos un dato
         DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email))
         // Seleccionamos los datos
