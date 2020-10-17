@@ -41,7 +41,7 @@ object DatosController {
 
 
 
-    fun selectDatos(filtro: String?, context: Context?): MutableList<Dato>? {
+    fun selectDatos(): MutableList<Dato>? {
         realm = Realm.getDefaultInstance()
         val datos = realm.where<Dato>().findAll()
         return realm.copyFromRealm(datos);
@@ -53,52 +53,39 @@ object DatosController {
     /**
      * Inserta un lugar en el sistema de almacenamiento
      */
-    fun insertDato(dato: Dato, context: Context?): Boolean {
-        // se insertan sin problemas porque lugares es clave primaria, si ya están no hace nada
-        // Abrimos la BD en modo escritura
-        val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
-        val bd: SQLiteDatabase = bdDatos.writableDatabase
+    fun insertDato(dato: Dato): Boolean {
+        realm = Realm.getDefaultInstance()
+        realm.beginTransaction()
         var sal = false
         try {
-            //Cargamos los parámetros
-            val valores = ContentValues()
-            valores.put("DESCRIPCION", dato.descripcion)
-            valores.put("IMG_ID", dato.imgId)
             // insertamos en su tabla, en long tenemos el id más alto creado
-            val res = bd.insert(DatosBD.DATOS_TABLE, null, valores)
-            sal = true
-        } catch (ex: SQLException) {
-            Log.d("Datos", "Error al insertar un nuevo Dato " + ex.message)
+            realm.copyToRealm(dato); // Copia, inserta
+            sal = true;
+        } catch (ex: Exception) {
+            Log.d("Datos", "Error al insertar un nuevo dato " + ex.message);
         } finally {
-            bd.close()
-            bdDatos.close()
-            return sal
+            realm.commitTransaction();
+            return sal;
         }
+
     }
 
     /**
      * Elimina un lugar del sistema de almacenamiento
      */
-    fun deleteDato(dato: Dato, context: Context?): Boolean {
-        // Abrimos la BD en modo escritura
-        val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
-        val bd: SQLiteDatabase = bdDatos.writableDatabase
+    fun deleteDato(dato: Dato): Boolean {
+        realm = Realm.getDefaultInstance()
+        realm.beginTransaction()
         var sal = false
         try {
-
-            // Creamos el where
-            val where = "DESCRIPCION = ?"
-            //Cargamos los parámetros es un vector, en este caso es solo uno, pero podrían ser mas
-            val args = arrayOf(dato.descripcion)
-            // En el fondo hemos hecho where descripción = dato.descripcion, podíamos habrr usado el id
-            // Eliminamos. En res tenemos el numero de filas eliminadas por si queremos tenerlo en cuenta
-            val res = bd.delete(DatosBD.DATOS_TABLE, where, args)
+            // Lo buscamos (campo, valor) y lo borramos
+            val d: Dato = realm.where<Dato>().equalTo("descripcion", dato.descripcion).findFirst()!!
+            d.deleteFromRealm()
             sal = true
-        } catch (ex: SQLException) {
-            Log.d("Datos", "Error al eliminar este Dato " + ex.message)
+        } catch (ex: Exception) {
+            Log.d("Datos", "Error al eliminar el dato " + ex.message)
         } finally {
-            bd.close()
-            bdDatos.close()
+            realm.commitTransaction()
             return sal
         }
     }

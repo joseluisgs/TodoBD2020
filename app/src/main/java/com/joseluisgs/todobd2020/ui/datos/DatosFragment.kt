@@ -294,7 +294,7 @@ class DatosFragment : Fragment() {
         // insertamos un dato
         DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
         // Seleccionamos los datos
-        this.datos = DatosController.selectDatos(null, context)!!
+        this.datos = DatosController.selectDatos()!!
         // Si queremos le añadimos unos datos ficticios
         // this.datos.addAll(DatosController.initDatos())
     }
