@@ -16,7 +16,7 @@ object DatosController {
 
     // Inicia la lista de datos con datos ficticios
     fun initDatos(): MutableList<Dato> {
-        var datos = mutableListOf<Dato>() // Lista
+        val datos = mutableListOf<Dato>() // Lista
         datos.add(Dato("Email", android.R.drawable.ic_dialog_email))
         datos.add(Dato("Info", android.R.drawable.ic_dialog_info))
         datos.add(Dato("OOOOHHHHH", android.R.drawable.ic_delete))
@@ -28,7 +28,7 @@ object DatosController {
 
     @SuppressLint("Recycle")
 
-    fun getDatos(filtro: String?, context: Context?): MutableList<Dato>? {
+    fun selectDatos(filtro: String?, context: Context?): MutableList<Dato>? {
         // Abrimos la BD en Modo Lectura
         val lista = mutableListOf<Dato>()
         val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
@@ -67,7 +67,7 @@ object DatosController {
     /**
      * Inserta un lugar en el sistema de almacenamiento
      */
-    fun setDato(dato: Dato, context: Context?): Boolean {
+    fun insertDato(dato: Dato, context: Context?): Boolean {
         // se insertan sin problemas porque lugares es clave primaria, si ya están no hace nada
         // Abrimos la BD en modo escritura
         val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
@@ -76,7 +76,7 @@ object DatosController {
         try {
             //Cargamos los parámetros
             val valores = ContentValues()
-            valores.put("DESCRIPCION", dato.description)
+            valores.put("DESCRIPCION", dato.descripcion)
             valores.put("IMG_ID", dato.imgId)
             // insertamos en su tabla, en long tenemos el id más alto creado
             val res = bd.insert(DatosBD.DATOS_TABLE, null, valores)
@@ -103,7 +103,7 @@ object DatosController {
             // Creamos el where
             val where = "DESCRIPCION = ?"
             //Cargamos los parámetros es un vector, en este caso es solo uno, pero podrían ser mas
-            val args = arrayOf(dato.description)
+            val args = arrayOf(dato.descripcion)
             // En el fondo hemos hecho where descripción = dato.descripcion, podíamos habrr usado el id
             // Eliminamos. En res tenemos el numero de filas eliminadas por si queremos tenerlo en cuenta
             val res = bd.delete(DatosBD.DATOS_TABLE, where, args)
@@ -120,7 +120,7 @@ object DatosController {
     /**
      * Actualiza un lugar en el sistema de almacenamiento
      */
-    fun updateDato(dato: Dato, context: Context): Boolean {
+    fun updateDato(datoNew: Dato, datoOld: Dato, context: Context?): Boolean {
         // Abrimos la BD en modo escritura
         val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
         val bd: SQLiteDatabase = bdDatos.writableDatabase
@@ -128,13 +128,12 @@ object DatosController {
         try {
             // Cargamos los valores
             val valores = ContentValues()
-            valores.put("DESCRIPCION", dato.description)
-            valores.put("IMG_ID", dato.imgId)
-
+            valores.put("DESCRIPCION", datoNew.descripcion)
+            valores.put("IMG_ID", datoNew.imgId)
             // Creamos el where
             val where = "DESCRIPCION = ?"
             //Cargamos los parámetros es un vector, en este caso es solo uno, pero podrían ser mas
-            val args = arrayOf(dato.description)
+            val args = arrayOf(datoOld.descripcion)
             // En el fondo hemos hecho where descripción = dato.descripcion, podíamos haber usado el id
             // Eliminamos. En res tenemos el numero de filas eliminadas por si queremos tenerlo en cuenta
             val res = bd.update(DatosBD.DATOS_TABLE, valores, where, args)

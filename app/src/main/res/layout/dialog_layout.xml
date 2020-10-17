@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   android:id="@+id/linearLayout"
+                                                   android:id="@+id/layoutDialog"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
     <TextView
-            android:id="@+id/txtNombre"
+            android:id="@+id/txtNombreDialog"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
-            android:id="@+id/edt_comment"
+            android:id="@+id/edtDescripcionDialog"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -27,27 +27,27 @@
             android:inputType="textMultiLine|text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtNombre"/>
+            app:layout_constraintTop_toBottomOf="@+id/txtNombreDialog"/>
 
     <Button
-            android:id="@+id/bAceptar"
+            android:id="@+id/btnAceptarDialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="64dp"
             android:layout_marginTop="8dp"
             android:text="@string/aceptar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edt_comment"/>
+            app:layout_constraintTop_toBottomOf="@+id/edtDescripcionDialog"/>
 
     <Button
-            android:id="@+id/bCancelar"
+            android:id="@+id/btnCancelarDialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
             android:layout_marginTop="8dp"
             android:text="@string/cancelar"
-            app:layout_constraintStart_toEndOf="@+id/bAceptar"
-            app:layout_constraintTop_toBottomOf="@+id/edt_comment"/>
+            app:layout_constraintStart_toEndOf="@+id/btnAceptarDialog"
+            app:layout_constraintTop_toBottomOf="@+id/edtDescripcionDialog"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

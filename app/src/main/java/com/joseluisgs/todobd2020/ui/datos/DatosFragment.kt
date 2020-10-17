@@ -1,5 +1,6 @@
 package com.joseluisgs.todobd2020.ui.datos
 
+import android.app.AlertDialog;
 import android.graphics.*
 import android.os.AsyncTask
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.joseluisgs.todobd2020.R
 import com.joseluisgs.todobd2020.datos.Dato
 import com.joseluisgs.todobd2020.datos.DatosController
+import kotlinx.android.synthetic.main.dialog_layout.view.*
 import kotlinx.android.synthetic.main.fragment_datos.*
 
 
@@ -202,7 +204,7 @@ class DatosFragment : Fragment() {
      */
     private fun borrarElemento(position: Int) {
         // Acciones
-        val deletedModel = datos[position]
+        val deletedModel: Dato = datos[position]
         adapter.removeItem(position)
         // Lo borramos
         DatosController.deleteDato(deletedModel, context)
@@ -211,7 +213,7 @@ class DatosFragment : Fragment() {
         snackbar.setAction("DESHACER") { // undo is selected, restore the deleted item
             adapter.restoreItem(deletedModel, position)
             // Lo insertamos
-            DatosController.setDato(deletedModel, context)
+            DatosController.insertDato(deletedModel, context)
         }
         snackbar.setActionTextColor(resources.getColor(R.color.colorPrimary))
         snackbar.show()
@@ -221,20 +223,51 @@ class DatosFragment : Fragment() {
      * Acción secundaria: Ver/Editar
      * @param position Int
      */
+//    private fun editarElemento(position: Int) {
+//        val dato = datos[position]
+//        // abrirDatos(noticia)
+//        adapter.removeItem(position)
+//        adapter.restoreItem(dato, position);
+//    }
+
     private fun editarElemento(position: Int) {
-        val dato = datos[position]
-        // abrirDatos(noticia)
+
+        // https://inducesmile.com/android-programming/how-to-add-edittext-in-alert-dialog-programmatically-in-android/
+        val editedModel: Dato = datos[position]
         adapter.removeItem(position)
-        adapter.restoreItem(dato, position);
+        // Creamos el dialogo y casamos sus elementos
+        val dialogBuilder = AlertDialog.Builder(context).create()
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_layout, null)
+        val bAceptar = dialogView.btnAceptarDialog
+
+        dialogView.txtNombreDialog.text = "Nuevo nombre para: " + editedModel.descripcion
+        // Pulsamos cancelar
+        dialogView.btnCancelarDialog.setOnClickListener {
+            dialogBuilder.dismiss()
+            adapter.restoreItem(editedModel, position)
+        }
+        // Pulsamos aceptar
+        bAceptar.setOnClickListener {
+            // Creamos el nuevo dato
+            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
+            dialogBuilder.dismiss()
+            adapter.restoreItem(datoNew, position)
+            // Actualizamos datos
+            DatosController.updateDato(datoNew, editedModel, context)
+        }
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.show()
     }
+
 
     fun getDatosFromBD() {
         // Vamos a borralo todo, opcional
         DatosController.removeAll(context)
         // insertamos un dato
-        DatosController.setDato(Dato("Ejemplo 1", android.R.drawable.ic_dialog_email), context)
+        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
         // Seleccionamos los datos
-        this.datos = DatosController.getDatos(null, context)!!
+        this.datos = DatosController.selectDatos(null, context)!!
         // Si queremos le añadimos unos datos ficticios
         // this.datos.addAll(DatosController.initDatos())
     }
