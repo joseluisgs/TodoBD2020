@@ -1,6 +1,5 @@
 package com.joseluisgs.todobd2020.datos
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
@@ -78,7 +77,6 @@ object DatosController {
         realm.beginTransaction()
         var sal = false
         try {
-            // Lo buscamos (campo, valor) y lo borramos
             val d: Dato = realm.where<Dato>().equalTo("descripcion", dato.descripcion).findFirst()!!
             d.deleteFromRealm()
             sal = true
@@ -93,49 +91,29 @@ object DatosController {
     /**
      * Actualiza un lugar en el sistema de almacenamiento
      */
-    fun updateDato(datoNew: Dato, datoOld: Dato, context: Context?): Boolean {
-        // Abrimos la BD en modo escritura
-        val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
-        val bd: SQLiteDatabase = bdDatos.writableDatabase
+    fun updateDato(datoNew: Dato): Boolean {
+        realm = Realm.getDefaultInstance()
+        realm.beginTransaction()
         var sal = false
         try {
-            // Cargamos los valores
-            val valores = ContentValues()
-            valores.put("DESCRIPCION", datoNew.descripcion)
-            valores.put("IMG_ID", datoNew.imgId)
-            // Creamos el where
-            val where = "DESCRIPCION = ?"
-            //Cargamos los parámetros es un vector, en este caso es solo uno, pero podrían ser mas
-            val args = arrayOf(datoOld.descripcion)
-            // En el fondo hemos hecho where descripción = dato.descripcion, podíamos haber usado el id
-            // Eliminamos. En res tenemos el numero de filas eliminadas por si queremos tenerlo en cuenta
-            val res = bd.update(DatosBD.DATOS_TABLE, valores, where, args)
+            // insertamos en su tabla, en long tenemos el id más alto creado
+            realm.copyToRealmOrUpdate(datoNew)
             sal = true
-        } catch (ex: SQLException) {
-            Log.d("Datos", "Error al actualizar este lugar " + ex.message)
+        } catch (ex: java.lang.Exception) {
+            Log.d("Lugares", "Error al actualizar un nuevo lugar " + ex.message)
         } finally {
-            bd.close()
-            bdDatos.close()
+            realm.commitTransaction()
             return sal
         }
     }
 
-    fun removeAll(context: Context?): Boolean {
-        // Abrimos la BD en modo escritura
-        val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
-        val bd: SQLiteDatabase = bdDatos.writableDatabase
-        var sal = false
-        try {
-            bd.execSQL("DELETE FROM ${DatosBD.DATOS_TABLE}")
-            sal = true
-        } catch (ex: SQLException) {
-            Log.d("Datos", "Error al borrar todos los datos " + ex.message)
-        } finally {
-            bd.close()
-            bdDatos.close()
-            return sal
-        }
-    }
+//    fun removeAll(): Boolean {
+//        let() realm = try! Realm()
+//            try! realm.write {
+//                realm.deleteAll()
+//                return true
+//            }
+//    }
 
 
 }
