@@ -312,10 +312,6 @@ class DatosFragment : Fragment() {
         dialogView.edtDescripcionDialog.setText(dato.descripcion)
         dialogView.edtDescripcionDialog.isEnabled = false
         dialogView.txtNombreDialog.text = "Nombre: "
-        // Pulsamos cancelar
-//        dialogView.btnCancelarDialog.setOnClickListener {
-//            dialogBuilder.dismiss()
-//        }
         // Pulsamos aceptar
         dialogView.btnAceptarDialog.setOnClickListener {
             dialogBuilder.dismiss()
