@@ -99,21 +99,31 @@ object DatosController {
             // insertamos en su tabla, en long tenemos el id más alto creado
             realm.copyToRealmOrUpdate(datoNew)
             sal = true
-        } catch (ex: java.lang.Exception) {
-            Log.d("Lugares", "Error al actualizar un nuevo lugar " + ex.message)
+        } catch (ex: Exception) {
+            Log.d("Datos", "Error al actualizar un nuevo Dato " + ex.message)
         } finally {
             realm.commitTransaction()
             return sal
         }
     }
 
-//    fun removeAll(): Boolean {
-//        let() realm = try! Realm()
-//            try! realm.write {
-//                realm.deleteAll()
-//                return true
-//            }
-//    }
+    /**
+     * Elimina todos los objetos
+     */
+    fun removeAll(): Boolean {
+        realm = Realm.getDefaultInstance()
+        realm.beginTransaction()
+        var sal = false
+        try {
+            realm.deleteAll();
+            sal = true
+        } catch (ex: Exception) {
+            Log.d("Lugares", "Error al borrar todos los Datos " + ex.message)
+        } finally {
+            realm.commitTransaction()
+            return sal
+        }
+    }
 
 
 }
