@@ -47,6 +47,8 @@ class DatosFragment : Fragment() {
     }
 
     private fun initUI() {
+        // Iniciamos REALM
+        DatosController.initRealm(context)
 
         // iniciamos el swipe para recargar
         iniciarSwipeRecarga();
@@ -217,13 +219,13 @@ class DatosFragment : Fragment() {
         val deletedModel: Dato = datos[position]
         adapter.removeItem(position)
         // Lo borramos
-        DatosController.deleteDato(deletedModel, context)
+        DatosController.deleteDato(deletedModel)
         // Mostramos la barra. Se la da opción al usuario de recuperar lo borrado con el el snackbar
         val snackbar = Snackbar.make(view!!, "Dato eliminado", Snackbar.LENGTH_LONG)
         snackbar.setAction("DESHACER") { // undo is selected, restore the deleted item
             adapter.restoreItem(deletedModel, position)
             // Lo insertamos
-            DatosController.insertDato(deletedModel, context)
+            DatosController.insertDato(deletedModel)
         }
         snackbar.setActionTextColor(resources.getColor(R.color.colorPrimary))
         snackbar.show()
@@ -252,11 +254,13 @@ class DatosFragment : Fragment() {
         // Pulsamos aceptar
         dialogView.btnAceptarDialog.setOnClickListener {
             // Creamos el nuevo dato
-            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
-            dialogBuilder.dismiss()
-            adapter.restoreItem(datoNew, position)
-            // Actualizamos datos
-            DatosController.updateDato(datoNew, editedModel, context)
+            if(dialogView.edtDescripcionDialog.text.isNotEmpty()) {
+                val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
+                dialogBuilder.dismiss()
+                adapter.restoreItem(datoNew, position)
+                // Actualizamos datos
+                DatosController.updateDato(datoNew)
+            }
         }
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
@@ -276,11 +280,13 @@ class DatosFragment : Fragment() {
         // Pulsamos aceptar
         dialogView.btnAceptarDialog.setOnClickListener {
             // Creamos el nuevo dato
-            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), android.R.drawable.ic_menu_compass)
-            dialogBuilder.dismiss()
-            adapter.addItem(datoNew)
-            // insertamos los datos
-            DatosController.insertDato(datoNew, context)
+            if(dialogView.edtDescripcionDialog.text.isNotEmpty()) {
+                val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), android.R.drawable.ic_menu_compass)
+                dialogBuilder.dismiss()
+                adapter.addItem(datoNew)
+                // insertamos los datos
+                DatosController.insertDato(datoNew)
+            }
         }
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
@@ -288,11 +294,11 @@ class DatosFragment : Fragment() {
 
     fun getDatosFromBD() {
         // Vamos a borralo todo, opcional
-        // DatosController.removeAll(context)
+        //DatosController.removeAll()
         // insertamos un dato
-        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
+        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email))
         // Seleccionamos los datos
-        this.datos = DatosController.selectDatos(null, context)!!
+        this.datos = DatosController.selectDatos()!!
         // Si queremos le añadimos unos datos ficticios
         // this.datos.addAll(DatosController.initDatos())
     }
