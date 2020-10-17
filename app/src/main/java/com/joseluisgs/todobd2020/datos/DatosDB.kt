@@ -16,7 +16,8 @@ class DatosBD(@Nullable context: Context?, @Nullable name: String?, @Nullable fa
     SQLiteOpenHelper(context, name, factory, version) {
 
     //Sentencia SQL para crear la tabla de de almacenamiento. Debemos crearla todo lo que vaya caquí
-    private val CREATE_DATOS_TABLE = "CREATE TABLE $DATOS_TABLE(description TEXT, imgId INTEGER)"
+    private val CREATE_DATOS_TABLE =
+        "CREATE TABLE $DATOS_TABLE (ID INTEGER PRIMARY KEY AUTOINCREMENT, DESCRIPCION TEXT, IMG_ID INTEGER)"
     private val DELETE_DATOS_TABLE = "DROP TABLE IF EXISTS $DATOS_TABLE"
 
     /**
