@@ -1,20 +1,20 @@
 package com.joseluisgs.todobd2020.datos
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import io.realm.kotlin.where
 
 
 object DatosController {
     // Variables de
     private const val DATOS_BD = "DATOS_BD_REALM"
     private const val DATOS_BD_VERSION = 1L
+    private lateinit var realm: Realm
 
     fun initRealm(context: Context?) {
         Realm.init(context)
@@ -42,37 +42,10 @@ object DatosController {
 
 
     fun selectDatos(filtro: String?, context: Context?): MutableList<Dato>? {
-        // Abrimos la BD en Modo Lectura
-        val lista = mutableListOf<Dato>()
-        val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
-        val bd: SQLiteDatabase = bdDatos.readableDatabase
+        realm = Realm.getDefaultInstance()
+        val datos = realm.where<Dato>().findAll()
+        return realm.copyFromRealm(datos);
 
-        // Podemos hacer la consulta directamente o parametrizada
-        //Cursor c = bd.rawQuery("SELECT * FROM Lugares " + filtro, null);
-        // http://www.sgoliver.net/blog/bases-de-datos-en-android-iii-consultarrecuperar-registros/
-
-        /* Ejemplo de cada campo de la consulta
-            String table = "table2";
-            String[] columns = {"column1", "column3"};
-            String selection = "column3 =?";
-            String[] selectionArgs = {"apple"};
-            String groupBy = null;
-            String having = null;
-            String orderBy = "column3 DESC";
-            String limit = "10";
-
-            Cursor cursor = db.query(table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
-     */
-        val c: Cursor = bd.query(DatosBD.DATOS_TABLE, null, null, null, null, null, filtro, null)
-        if (c.moveToFirst()) {
-            do {
-                val aux = Dato(c.getString(1), c.getInt(2))
-                lista.add(aux)
-            } while (c.moveToNext())
-        }
-        bd.close()
-        bdDatos.close()
-        return lista
     }
 
     // Manejar un CRUD
