@@ -39,11 +39,13 @@ object DatosController {
     }
 
 
-
+    /**
+     * Selecciona los datos
+     * @return MutableList<Dato>?
+     */
     fun selectDatos(): MutableList<Dato>? {
         realm = Realm.getDefaultInstance()
-        val datos = realm.where<Dato>().findAll()
-        return realm.copyFromRealm(datos);
+        return  realm.where<Dato>().findAll().toMutableList()
 
     }
 
