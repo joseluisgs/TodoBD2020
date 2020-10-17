@@ -12,7 +12,7 @@ import io.realm.annotations.RealmClass
  */
 
 // Podemos usar la notacion
-// Es importante que los datos tenga un valor por defecto, lo ideal sería
+// Es importante que los datos tenga un valor por defecto, lo ideal sería poner y detectar nulls, como dejo abajo
 open class Dato(var id: Long = 0,
                 var descripcion: String ="",
                 var imgId: Int=0) : RealmObject() {
