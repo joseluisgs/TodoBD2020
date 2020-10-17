@@ -47,6 +47,8 @@ class DatosFragment : Fragment() {
     }
 
     private fun initUI() {
+        // Iniciamos REALM
+        DatosController.initRealm(context)
 
         // iniciamos el swipe para recargar
         iniciarSwipeRecarga();

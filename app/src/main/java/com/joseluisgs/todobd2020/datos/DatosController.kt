@@ -7,12 +7,25 @@ import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import io.realm.Realm
+import io.realm.RealmConfiguration
 
 
 object DatosController {
     // Variables de
-    private const val DATOS_BD = "DATOS_BD_LITE"
-    private const val DATOS_BD_VERSION = 1
+    private const val DATOS_BD = "DATOS_BD_REALM"
+    private const val DATOS_BD_VERSION = 1L
+
+    fun initRealm(context: Context?) {
+        Realm.init(context)
+        val config = RealmConfiguration.Builder()
+            .name(DATOS_BD)
+            .schemaVersion(DATOS_BD_VERSION) // Versión de esquema estamos trabajando, si lo cambiamos, debemos incrementar
+            //.deleteRealmIfMigrationNeeded() // Podemos borrar los datos que ya haya si cambiamos el esquema
+            .build()
+        Realm.setDefaultConfiguration(config)
+        Log.d("Datos", "Iniciando Realm")
+    }
 
     // Inicia la lista de datos con datos ficticios
     fun initDatos(): MutableList<Dato> {
@@ -26,7 +39,7 @@ object DatosController {
         return datos;
     }
 
-    @SuppressLint("Recycle")
+
 
     fun selectDatos(filtro: String?, context: Context?): MutableList<Dato>? {
         // Abrimos la BD en Modo Lectura
