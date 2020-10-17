@@ -1,6 +1,6 @@
 package com.joseluisgs.todobd2020.ui.datos
 
-import android.app.AlertDialog;
+import android.app.AlertDialog
 import android.graphics.*
 import android.os.AsyncTask
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +59,15 @@ class DatosFragment : Fragment() {
 
         // Mostramos las vistas de listas y adaptador asociado
         datosRecycler.layoutManager = LinearLayoutManager(context)
+
+        // iniciamos los eventos
+        iniciarEventosBotones()
+    }
+
+    private fun iniciarEventosBotones() {
+        datosBtnNuevo.setOnClickListener {
+            nuevoElemento()
+        }
     }
 
 
@@ -223,13 +233,6 @@ class DatosFragment : Fragment() {
      * Acción secundaria: Ver/Editar
      * @param position Int
      */
-//    private fun editarElemento(position: Int) {
-//        val dato = datos[position]
-//        // abrirDatos(noticia)
-//        adapter.removeItem(position)
-//        adapter.restoreItem(dato, position);
-//    }
-
     private fun editarElemento(position: Int) {
 
         // https://inducesmile.com/android-programming/how-to-add-edittext-in-alert-dialog-programmatically-in-android/
@@ -239,7 +242,6 @@ class DatosFragment : Fragment() {
         val dialogBuilder = AlertDialog.Builder(context).create()
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.dialog_layout, null)
-        val bAceptar = dialogView.btnAceptarDialog
 
         dialogView.txtNombreDialog.text = "Nuevo nombre para: " + editedModel.descripcion
         // Pulsamos cancelar
@@ -248,7 +250,7 @@ class DatosFragment : Fragment() {
             adapter.restoreItem(editedModel, position)
         }
         // Pulsamos aceptar
-        bAceptar.setOnClickListener {
+        dialogView.btnAceptarDialog.setOnClickListener {
             // Creamos el nuevo dato
             val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
             dialogBuilder.dismiss()
@@ -260,10 +262,33 @@ class DatosFragment : Fragment() {
         dialogBuilder.show()
     }
 
+    private fun nuevoElemento() {
+        // Creamos el dialogo y casamos sus elementos
+        val dialogBuilder = AlertDialog.Builder(context).create()
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_layout, null)
+
+        dialogView.txtNombreDialog.text = "Nuevo nombre: "
+        // Pulsamos cancelar
+        dialogView.btnCancelarDialog.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+        // Pulsamos aceptar
+        dialogView.btnAceptarDialog.setOnClickListener {
+            // Creamos el nuevo dato
+            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), android.R.drawable.ic_menu_compass)
+            dialogBuilder.dismiss()
+            adapter.addItem(datoNew)
+            // insertamos los datos
+            DatosController.insertDato(datoNew, context)
+        }
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.show()
+    }
 
     fun getDatosFromBD() {
         // Vamos a borralo todo, opcional
-        DatosController.removeAll(context)
+        // DatosController.removeAll(context)
         // insertamos un dato
         DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
         // Seleccionamos los datos
@@ -278,7 +303,25 @@ class DatosFragment : Fragment() {
      * @param dato Dato
      */
     private fun eventoClicFila(dato: Dato) {
-        Log.d("Datos", "Has hecho clic en dato: $dato")
+        // Creamos el dialogo y casamos sus elementos
+        val dialogBuilder = AlertDialog.Builder(context).create()
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_layout, null)
+
+        dialogView.btnCancelarDialog.isVisible = false
+        dialogView.edtDescripcionDialog.setText(dato.descripcion)
+        dialogView.edtDescripcionDialog.isEnabled = false
+        dialogView.txtNombreDialog.text = "Nombre: "
+        // Pulsamos cancelar
+//        dialogView.btnCancelarDialog.setOnClickListener {
+//            dialogBuilder.dismiss()
+//        }
+        // Pulsamos aceptar
+        dialogView.btnAceptarDialog.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.show()
     }
 
     /**
