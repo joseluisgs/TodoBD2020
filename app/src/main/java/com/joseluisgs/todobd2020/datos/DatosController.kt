@@ -53,76 +53,36 @@ object DatosController {
     /**
      * Inserta un lugar en el sistema de almacenamiento
      */
-    fun insertDato(dato: Dato): Boolean {
-        realm = Realm.getDefaultInstance()
-        realm.beginTransaction()
-        var sal = false
-        try {
-            // insertamos en su tabla, en long tenemos el id más alto creado
-            realm.copyToRealm(dato); // Copia, inserta
-            sal = true;
-        } catch (ex: Exception) {
-            Log.d("Datos", "Error al insertar un nuevo dato " + ex.message);
-        } finally {
-            realm.commitTransaction();
-            return sal;
+    fun insertDato(dato: Dato) {
+        Realm.getDefaultInstance().executeTransaction {
+            it.copyToRealm(dato); // Copia, inserta
         }
-
     }
 
     /**
      * Elimina un lugar del sistema de almacenamiento
      */
-    fun deleteDato(dato: Dato): Boolean {
-        realm = Realm.getDefaultInstance()
-        realm.beginTransaction()
-        var sal = false
-        try {
-            val d: Dato = realm.where<Dato>().equalTo("descripcion", dato.descripcion).findFirst()!!
-            d.deleteFromRealm()
-            sal = true
-        } catch (ex: Exception) {
-            Log.d("Datos", "Error al eliminar el dato " + ex.message)
-        } finally {
-            realm.commitTransaction()
-            return sal
+    fun deleteDato(dato: Dato) {
+        Realm.getDefaultInstance().executeTransaction {
+            it.where<Dato>().equalTo("descripcion", dato.descripcion).findFirst()?.deleteFromRealm()
         }
     }
 
     /**
      * Actualiza un lugar en el sistema de almacenamiento
      */
-    fun updateDato(datoNew: Dato): Boolean {
-        realm = Realm.getDefaultInstance()
-        realm.beginTransaction()
-        var sal = false
-        try {
-            // insertamos en su tabla, en long tenemos el id más alto creado
-            realm.copyToRealmOrUpdate(datoNew)
-            sal = true
-        } catch (ex: Exception) {
-            Log.d("Datos", "Error al actualizar un nuevo Dato " + ex.message)
-        } finally {
-            realm.commitTransaction()
-            return sal
+    fun updateDato(dato: Dato) {
+        Realm.getDefaultInstance().executeTransaction {
+            it.copyToRealmOrUpdate(dato)
         }
     }
 
     /**
      * Elimina todos los objetos
      */
-    fun removeAll(): Boolean {
-        realm = Realm.getDefaultInstance()
-        realm.beginTransaction()
-        var sal = false
-        try {
-            realm.deleteAll();
-            sal = true
-        } catch (ex: Exception) {
-            Log.d("Lugares", "Error al borrar todos los Datos " + ex.message)
-        } finally {
-            realm.commitTransaction()
-            return sal
+    fun removeAll() {
+        Realm.getDefaultInstance().executeTransaction {
+            it.deleteAll();
         }
     }
 
