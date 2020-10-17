@@ -254,11 +254,13 @@ class DatosFragment : Fragment() {
         // Pulsamos aceptar
         dialogView.btnAceptarDialog.setOnClickListener {
             // Creamos el nuevo dato
-            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
-            dialogBuilder.dismiss()
-            adapter.restoreItem(datoNew, position)
-            // Actualizamos datos
-            DatosController.updateDato(datoNew)
+            if(dialogView.edtDescripcionDialog.text.isNotEmpty()) {
+                val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), editedModel.imgId)
+                dialogBuilder.dismiss()
+                adapter.restoreItem(datoNew, position)
+                // Actualizamos datos
+                DatosController.updateDato(datoNew)
+            }
         }
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
@@ -278,11 +280,13 @@ class DatosFragment : Fragment() {
         // Pulsamos aceptar
         dialogView.btnAceptarDialog.setOnClickListener {
             // Creamos el nuevo dato
-            val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), android.R.drawable.ic_menu_compass)
-            dialogBuilder.dismiss()
-            adapter.addItem(datoNew)
-            // insertamos los datos
-            DatosController.insertDato(datoNew)
+            if(dialogView.edtDescripcionDialog.text.isNotEmpty()) {
+                val datoNew = Dato(dialogView.edtDescripcionDialog.text.toString(), android.R.drawable.ic_menu_compass)
+                dialogBuilder.dismiss()
+                adapter.addItem(datoNew)
+                // insertamos los datos
+                DatosController.insertDato(datoNew)
+            }
         }
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
