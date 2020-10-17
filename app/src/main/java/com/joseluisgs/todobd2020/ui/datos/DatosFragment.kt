@@ -219,13 +219,13 @@ class DatosFragment : Fragment() {
         val deletedModel: Dato = datos[position]
         adapter.removeItem(position)
         // Lo borramos
-        DatosController.deleteDato(deletedModel, context)
+        DatosController.deleteDato(deletedModel)
         // Mostramos la barra. Se la da opción al usuario de recuperar lo borrado con el el snackbar
         val snackbar = Snackbar.make(view!!, "Dato eliminado", Snackbar.LENGTH_LONG)
         snackbar.setAction("DESHACER") { // undo is selected, restore the deleted item
             adapter.restoreItem(deletedModel, position)
             // Lo insertamos
-            DatosController.insertDato(deletedModel, context)
+            DatosController.insertDato(deletedModel)
         }
         snackbar.setActionTextColor(resources.getColor(R.color.colorPrimary))
         snackbar.show()
@@ -258,7 +258,7 @@ class DatosFragment : Fragment() {
             dialogBuilder.dismiss()
             adapter.restoreItem(datoNew, position)
             // Actualizamos datos
-            DatosController.updateDato(datoNew, editedModel, context)
+            DatosController.updateDato(datoNew)
         }
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
@@ -282,7 +282,7 @@ class DatosFragment : Fragment() {
             dialogBuilder.dismiss()
             adapter.addItem(datoNew)
             // insertamos los datos
-            DatosController.insertDato(datoNew, context)
+            DatosController.insertDato(datoNew)
         }
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
@@ -292,7 +292,7 @@ class DatosFragment : Fragment() {
         // Vamos a borralo todo, opcional
         // DatosController.removeAll(context)
         // insertamos un dato
-        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
+        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email))
         // Seleccionamos los datos
         this.datos = DatosController.selectDatos()!!
         // Si queremos le añadimos unos datos ficticios
