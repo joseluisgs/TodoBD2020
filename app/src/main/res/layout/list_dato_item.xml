@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeightLarge"
+                android:background="@drawable/border">
+
+    <ImageView
+            android:id="@+id/ivItemDato"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:contentDescription="@string/icon" app:srcCompat="@android:mipmap/sym_def_app_icon"/>
+
+    <TextView
+            android:id="@+id/txItemDato"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/ivItemDato"
+            android:gravity="center_vertical"
+            android:textSize="16sp" android:text="Texto de Prueba" android:textColor="@color/colorPrimaryDark"/>
+
+</RelativeLayout>
