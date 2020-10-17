@@ -204,10 +204,14 @@ class DatosFragment : Fragment() {
         // Acciones
         val deletedModel = datos[position]
         adapter.removeItem(position)
+        // Lo borramos
+        DatosController.deleteDato(deletedModel, context)
         // Mostramos la barra. Se la da opción al usuario de recuperar lo borrado con el el snackbar
         val snackbar = Snackbar.make(view!!, "Dato eliminado", Snackbar.LENGTH_LONG)
         snackbar.setAction("DESHACER") { // undo is selected, restore the deleted item
             adapter.restoreItem(deletedModel, position)
+            // Lo insertamos
+            DatosController.setDato(deletedModel, context)
         }
         snackbar.setActionTextColor(resources.getColor(R.color.colorPrimary))
         snackbar.show()
@@ -222,6 +226,17 @@ class DatosFragment : Fragment() {
         // abrirDatos(noticia)
         adapter.removeItem(position)
         adapter.restoreItem(dato, position);
+    }
+
+    fun getDatosFromBD() {
+        // Vamos a borralo todo, opcional
+        DatosController.removeAll(context)
+        // insertamos un dato
+        DatosController.setDato(Dato("Ejemplo 1", android.R.drawable.ic_dialog_email), context)
+        // Seleccionamos los datos
+        this.datos = DatosController.getDatos(null, context)!!
+        // Si queremos le añadimos unos datos ficticios
+        // this.datos.addAll(DatosController.initDatos())
     }
 
 
@@ -250,7 +265,7 @@ class DatosFragment : Fragment() {
         override fun doInBackground(vararg p0: String?): Void? {
             Log.d("Datos", "Entrado en doInBackgroud");
             try {
-                datos = DatosController.initDatos()
+                getDatosFromBD()
                 Log.d("Datos", "Datos pre tamaño: " + datos.size.toString());
             } catch (e: Exception) {
                 Log.e("T2Plano ", e.message.toString());

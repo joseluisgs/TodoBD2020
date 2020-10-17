@@ -28,7 +28,7 @@ object DatosController {
 
     @SuppressLint("Recycle")
 
-    fun getDatos(filtro: String?, context: Context): MutableList<Dato>? {
+    fun getDatos(filtro: String?, context: Context?): MutableList<Dato>? {
         // Abrimos la BD en Modo Lectura
         val lista = mutableListOf<Dato>()
         val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
@@ -53,7 +53,7 @@ object DatosController {
         val c: Cursor = bd.query(DatosBD.DATOS_TABLE, null, null, null, null, null, filtro, null)
         if (c.moveToFirst()) {
             do {
-                val aux = Dato(c.getString(0), c.getInt(1))
+                val aux = Dato(c.getString(1), c.getInt(2))
                 lista.add(aux)
             } while (c.moveToNext())
         }
@@ -67,7 +67,7 @@ object DatosController {
     /**
      * Inserta un lugar en el sistema de almacenamiento
      */
-    fun setDato(dato: Dato, context: Context): Boolean {
+    fun setDato(dato: Dato, context: Context?): Boolean {
         // se insertan sin problemas porque lugares es clave primaria, si ya están no hace nada
         // Abrimos la BD en modo escritura
         val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
@@ -93,7 +93,7 @@ object DatosController {
     /**
      * Elimina un lugar del sistema de almacenamiento
      */
-    fun deleteDato(dato: Dato, context: Context): Boolean {
+    fun deleteDato(dato: Dato, context: Context?): Boolean {
         // Abrimos la BD en modo escritura
         val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
         val bd: SQLiteDatabase = bdDatos.writableDatabase
@@ -109,7 +109,7 @@ object DatosController {
             val res = bd.delete(DatosBD.DATOS_TABLE, where, args)
             sal = true
         } catch (ex: SQLException) {
-            Log.d("Lugares", "Error al eliminar este Dato " + ex.message)
+            Log.d("Datos", "Error al eliminar este Dato " + ex.message)
         } finally {
             bd.close()
             bdDatos.close()
@@ -140,7 +140,24 @@ object DatosController {
             val res = bd.update(DatosBD.DATOS_TABLE, valores, where, args)
             sal = true
         } catch (ex: SQLException) {
-            Log.d("Lugares", "Error al actualizar este lugar " + ex.message)
+            Log.d("Datos", "Error al actualizar este lugar " + ex.message)
+        } finally {
+            bd.close()
+            bdDatos.close()
+            return sal
+        }
+    }
+
+    fun removeAll(context: Context?): Boolean {
+        // Abrimos la BD en modo escritura
+        val bdDatos = DatosBD(context, DATOS_BD, null, DATOS_BD_VERSION)
+        val bd: SQLiteDatabase = bdDatos.writableDatabase
+        var sal = false
+        try {
+            bd.execSQL("DELETE FROM ${DatosBD.DATOS_TABLE}")
+            sal = true
+        } catch (ex: SQLException) {
+            Log.d("Datos", "Error al borrar todos los datos " + ex.message)
         } finally {
             bd.close()
             bdDatos.close()
