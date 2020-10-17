@@ -13,14 +13,13 @@ object DatosController {
     // Variables de
     private const val DATOS_BD = "DATOS_BD_REALM"
     private const val DATOS_BD_VERSION = 1L
-    private lateinit var realm: Realm
 
     fun initRealm(context: Context?) {
         Realm.init(context)
         val config = RealmConfiguration.Builder()
             .name(DATOS_BD)
             .schemaVersion(DATOS_BD_VERSION) // Versión de esquema estamos trabajando, si lo cambiamos, debemos incrementar
-            //.deleteRealmIfMigrationNeeded() // Podemos borrar los datos que ya haya si cambiamos el esquema
+            .deleteRealmIfMigrationNeeded() // Podemos borrar los datos que ya haya si cambiamos el esquema
             .build()
         Realm.setDefaultConfiguration(config)
         Log.d("Datos", "Iniciando Realm")
@@ -44,10 +43,9 @@ object DatosController {
      * @return MutableList<Dato>?
      */
     fun selectDatos(): MutableList<Dato>? {
-        realm = Realm.getDefaultInstance()
-        val datos = realm.where<Dato>().findAll()
-        return realm.copyFromRealm(datos)
-
+        return Realm.getDefaultInstance().copyFromRealm(
+                Realm.getDefaultInstance().where<Dato>().findAll()
+        )
     }
 
     // Manejar un CRUD
