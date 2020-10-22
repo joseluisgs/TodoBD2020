@@ -1,6 +1,8 @@
 package com.joseluisgs.todobd2020.ui.datos
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.*
 import android.os.AsyncTask
 import android.os.Bundle
@@ -296,7 +298,16 @@ class DatosFragment : Fragment() {
         // Vamos a borralo todo, opcional
         //DatosController.removeAll()
         // insertamos un dato
+<<<<<<< Updated upstream
         DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email))
+||||||| ancestor
+        DatosController.insertDato(Dato("Dato 1", android.R.drawable.ic_dialog_email), context)
+=======
+        val prefs = this.context?.getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
+        val dato = prefs?.getString("dato", "por defecto")
+        val icono = prefs?.getInt("icono", android.R.drawable.ic_dialog_info)
+        DatosController.insertDato(Dato(dato!!, icono!!), context)
+>>>>>>> Stashed changes
         // Seleccionamos los datos
         this.datos = DatosController.selectDatos()!!
         // Si queremos le añadimos unos datos ficticios
